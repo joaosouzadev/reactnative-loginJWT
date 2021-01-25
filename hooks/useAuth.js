@@ -41,7 +41,7 @@ export function useAuth() {
 			login: async (email, password) => {
 				const result = await axios.post(`${BASE_URL}/login`, {
 					'email': email,
-					'password': password
+					'senha': password
 				});
 				// console.log(result);
 				const user = result.data.token
@@ -53,14 +53,21 @@ export function useAuth() {
 				SecureStore.deleteItemAsync('user');
 				dispatch(createAction('REMOVE_USER'));
 			},
-			register: async (name, email, password) => {
-				await axios.post(`${BASE_URL}/register`, {
-					'name': name,
+			register: async (email, password) => {
+				const result = await axios.post(`${BASE_URL}/users`, {
 					'email': email,
-					'password': password,
-					'password_confirmation': password
+					'senha': password,
 				});
-				console.log('register', email, password);
+
+				return result.status;
+			},
+			confirmation: async (email, password, token) => {
+				const result = await axios.post(`${BASE_URL}/users/confirm`, {
+					'email': email,
+					'token': token,
+				});
+
+				return result.status;
 			},
 
 		}),

@@ -14,9 +14,8 @@ export function RegistrationScreen({ navigation }) {
 
   const { register } = React.useContext(AuthContext);
 
-  const [nome, setNome] = React.useState('João');
-  const [email, setEmail] = React.useState('andejungle@hotmail.com');
-  const [password, setPassword] = React.useState('asdasdasd');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
@@ -27,12 +26,6 @@ export function RegistrationScreen({ navigation }) {
       }} />
       <Heading style={styles.title}>CRIAR CONTA</Heading>
       <Error error={error} />
-      <Input
-        style={styles.input}
-        placeholder={'Nome'}
-        value={nome}
-        onChangeText={setNome}
-      />
       <Input
         style={styles.input}
         placeholder={'Email'}
@@ -52,11 +45,12 @@ export function RegistrationScreen({ navigation }) {
         style={styles.loginButton}
         onPress={
           async () => {
-            console.log('posting', nome, email, password);
             try {
               setLoading(true);
-              await register(nome, email, password);
-              navigation.pop();
+              const status = await register(email, password);
+              if (status == '201') {
+                navigation.navigate('Confirmation', { email: email, password: password });
+              }
             } catch (e) {
               setError(e.message);
               setLoading(false);
